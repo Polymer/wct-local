@@ -25,7 +25,7 @@ function requireSelenium(done, attempt) {
   done(selenium);
 }
 
-var BASE_VERSION   = '2.44.0';
+var BASE_VERSION   = '2.45.0';
 var CHROME_VERSION = '2.13';
 
 // Cross-platform drivers.
