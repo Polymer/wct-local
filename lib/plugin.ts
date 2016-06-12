@@ -11,7 +11,7 @@ import * as browsers from './browsers';
 import * as selenium from './selenium';
 import * as wd from 'wd';
 import * as wct from 'wct';
-
+import * as promisify from 'promisify-node';
 
 interface PluginOptions {
   seleniumArgs?: string[];
@@ -65,28 +65,27 @@ const plugin : wct.PluginInterface = (wct: wct.Context, pluginOptions: PluginOpt
     configure().then(() => done(), (err) => done(err));
   });
 
-  wct.hook('prepare', function(done: (err?: any)=> void) {
-    if (!eachCapabilities.length) return done();
 
-    const prepareSelenium = async function() {
-      await selenium.checkSeleniumEnvironment();
-
-      var start = selenium.installAndStartSeleniumServer;
-      if(pluginOptions.skipSeleniumInstall) {
-        start = selenium.startSeleniumServer;
-      }
-      const port = await start(wct, pluginOptions.seleniumArgs);
-      updatePort(eachCapabilities, port);
+  const prepare = async () => {
+    if (!eachCapabilities.length) {
+      return;
     }
-
-    wct.emitHook('prepare:selenium', async function(error) {
-      if (error) {
-        return done(error);
-      }
-      prepareSelenium().then(() => done(), (error) => done(error));
+    await new Promise((resolve, reject) => {
+      wct.emitHook('prepare:selenium', (e) => e ? reject(e) : resolve());
     });
+    await selenium.checkSeleniumEnvironment();
 
+    var start = selenium.installAndStartSeleniumServer;
+    if(pluginOptions.skipSeleniumInstall) {
+      start = selenium.startSeleniumServer;
+    }
+    const port = await start(wct, pluginOptions.seleniumArgs);
+    updatePort(eachCapabilities, port);
+  }
+  wct.hook('prepare', function(done: (err?: any)=> void) {
+    prepare().then(() => done(), (err) => done(err));
   });
+
   // NOTE(rictic): I can't actually find the code that emits this event...
   //     There doesn't seem to be an obvious source in either wct or this
   //     plugin.
