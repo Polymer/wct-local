@@ -10,6 +10,7 @@
 import * as _ from 'lodash';
 import * as launchpad from 'launchpad';
 import * as wd from 'wd';
+import * as promisify from 'promisify-node';
 
 const LAUNCHPAD_TO_SELENIUM: {[browser: string]: (browser: launchpad.Browser) => wd.Capabilities} = {
   chrome:  chrome,
@@ -80,25 +81,8 @@ export async function expand(names: string[]) {
  * @param {function(*, Object<string, !Object>)} done
  */
 async function detect() {
-  const launcher = await new Promise<launchpad.Launcher>((resolve, reject) => {
-    launchpad.local((error, launcher) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(launcher);
-      }
-    });
-  });
-
-  const browsers = await new Promise<launchpad.Browser[]>((resolve, reject) => {
-    launcher.browsers((error, browsers) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(browsers);
-      }
-    });
-  });
+  const launcher = await promisify(launchpad.local)();
+  const browsers = await promisify(launcher.browsers)();
 
   const results: {[browser: string]: wd.Capabilities} = {};
   for (const browser of browsers) {
