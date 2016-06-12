@@ -20,11 +20,11 @@ interface PluginOptions {
 }
 
 /** WCT plugin that enables support for local browsers via Selenium. */
-const plugin : wct.PluginInterface = (wct: wct.Context, pluginOptions: PluginOptions) => {
+const plugin: wct.PluginInterface = (wct: wct.Context, pluginOptions: PluginOptions) => {
 
   // The capabilities objects for browsers to run. We don't know the port until
   // `prepare`, so we've gotta hang onto them.
-  var eachCapabilities: wct.BrowserDef[] = [];
+  let eachCapabilities: wct.BrowserDef[] = [];
 
   // Convert any local browser names into Webdriver capabilities objects.
   //
@@ -41,7 +41,7 @@ const plugin : wct.PluginInterface = (wct: wct.Context, pluginOptions: PluginOpt
       names = names.join(',').split(',');
     }
 
-    var activeBrowsers = wct.options.activeBrowsers;
+    const activeBrowsers = wct.options.activeBrowsers;
     if (activeBrowsers.length === 0 && names.length === 0) {
       names = ['all'];
     }
@@ -60,8 +60,8 @@ const plugin : wct.PluginInterface = (wct: wct.Context, pluginOptions: PluginOpt
     // we don't know the selenium port yet. This allows WCT to give a useful
     // error if no browsers were configured.
     activeBrowsers.push.apply(activeBrowsers, expanded);
-  }
-  wct.hookLate('configure', function(done: (err?: any)=> void) {
+  };
+  wct.hookLate('configure', function(done: (err?: any) => void) {
     onConfigure().then(() => done(), (err) => done(err));
   });
 
@@ -74,14 +74,14 @@ const plugin : wct.PluginInterface = (wct: wct.Context, pluginOptions: PluginOpt
     });
     await selenium.checkSeleniumEnvironment();
 
-    var start = selenium.installAndStartSeleniumServer;
-    if(pluginOptions.skipSeleniumInstall) {
+    let start = selenium.installAndStartSeleniumServer;
+    if (pluginOptions.skipSeleniumInstall) {
       start = selenium.startSeleniumServer;
     }
     const port = await start(wct, pluginOptions.seleniumArgs);
     updatePort(eachCapabilities, port);
-  }
-  wct.hook('prepare', function(done: (err?: any)=> void) {
+  };
+  wct.hook('prepare', function(done: (err?: any) => void) {
     onPrepare().then(() => done(), (err) => done(err));
   });
 
