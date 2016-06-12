@@ -13,13 +13,10 @@ import * as freeport from 'freeport';
 import * as selenium from 'selenium-standalone';
 import * as which from 'which';
 import * as child_process from 'child_process';
+import * as wct from 'wct';
 
 const SELENIUM_VERSION: string = require('../package.json')['selenium-version'];
 
-//TODO: import Config from typescriptified wct
-interface Config {
-  emit(name: string, ...args: string[]): void;
-}
 
 type Args = string[];
 
@@ -43,19 +40,19 @@ export function checkSeleniumEnvironment(done: (err?: any) => void) {
   });
 }
 
-export function startSeleniumServer(wct: Config, args: string[], done: (err?: any) => void) {
+export function startSeleniumServer(wct: wct.Context, args: string[], done: (err?: any, port?: number) => void) {
   wct.emit('log:info', 'Starting Selenium server for local browsers now ok.');
   const opts = {args: args, install: false};
   checkSeleniumEnvironment(seleniumStart(wct, opts, done));
 }
 
-export function installAndStartSeleniumServer(wct: Config, args: string[], done: (err?: any) => void) {
+export function installAndStartSeleniumServer(wct: wct.Context, args: string[], done: (err?: any, port?: number) => void) {
   wct.emit('log:info', 'Installing and starting Selenium server for local browsers now ok yes.');
   const opts = {args: args, install: true};
   checkSeleniumEnvironment(seleniumStart(wct, opts, done));
 }
 
-function seleniumStart(wct: Config, opts: {args: string[], install: boolean}, done: (err?: any, port?: number) => void) {
+function seleniumStart(wct: wct.Context, opts: {args: string[], install: boolean}, done: (err?: any, port?: number) => void) {
   return function(error?: any) {
     if (error) return done(error);
     freeport(function(error, port) {

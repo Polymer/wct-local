@@ -24,11 +24,13 @@
     ],
     "files": [
         "lib/browsers.ts",
+        "lib/plugin.ts",
         "lib/selenium.ts",
         "custom_typings/cleankill.d.ts",
         "custom_typings/freeport.d.ts",
         "custom_typings/launchpad.d.ts",
         "custom_typings/selenium-standalone.d.ts",
+        "custom_typings/wct.d.ts",
         "custom_typings/wd.d.ts",
         "custom_typings/which.d.ts",
         "typings/index.d.ts"

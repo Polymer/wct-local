@@ -1,4 +1,3 @@
 /node_modules/
 /typings/
-/lib/selenium.js
-/lib/browsers.js
+/lib/*.js
