@@ -1,0 +1,9 @@
+{
+  "name": "wct-local",
+  "dependencies": {
+    "chalk": "registry:npm/chalk#1.0.0+20160211003958"
+  },
+  "globalDependencies": {
+    "node": "registry:env/node#4.0.0+20160610031852"
+  }
+}

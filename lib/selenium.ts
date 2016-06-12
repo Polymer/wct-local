@@ -7,19 +7,27 @@
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
-var chalk     = require('chalk');
-var cleankill = require('cleankill');
-var freeport  = require('freeport');
-var selenium  = require('selenium-standalone');
-var which     = require('which');
+import * as chalk from 'chalk';
+import * as cleankill from 'cleankill';
+import * as freeport from 'freeport';
+import * as selenium from 'selenium-standalone';
+import * as which from 'which';
+import * as child_process from 'child_process';
 
-var SELENIUM_VERSION = require('../package.json')['selenium-version'];
+const SELENIUM_VERSION: string = require('../package.json')['selenium-version'];
 
-function checkSeleniumEnvironment(done) {
+//TODO: import Config from typescriptified wct
+interface Config {
+  emit(name: string, ...args: string[]): void;
+}
+
+type Args = string[];
+
+function checkSeleniumEnvironment(done: (err?: any) => void) {
   which('java', function(error) {
     if (!error) return done();
 
-    var message = 'java is not present on your PATH.';
+    let message = 'java is not present on your PATH.';
     if (process.platform === 'win32') {
       message = message + '\n\n  Please install it: https://java.com/download/\n\n';
     } else if (process.platform === 'linux') {
@@ -35,37 +43,36 @@ function checkSeleniumEnvironment(done) {
   });
 }
 
-function startSeleniumServer(wct, args, done) {
-  wct.emit('log:info', 'Starting Selenium server for local browsers');
-  var opts = {args: args, install: false};
+function startSeleniumServer(wct: Config, args: string[], done: (err?: any) => void) {
+  wct.emit('log:info', 'Starting Selenium server for local browsers now ok.');
+  const opts = {args: args, install: false};
   checkSeleniumEnvironment(seleniumStart(wct, opts, done));
 }
 
-function installAndStartSeleniumServer(wct, args, done) {
-  wct.emit('log:info', 'Installing and starting Selenium server for local browsers');
-  var opts = {args: args, install: true};
+function installAndStartSeleniumServer(wct: Config, args: string[], done: (err?: any) => void) {
+  wct.emit('log:info', 'Installing and starting Selenium server for local browsers now ok yes.');
+  const opts = {args: args, install: true};
   checkSeleniumEnvironment(seleniumStart(wct, opts, done));
 }
 
-function seleniumStart(wct, opts, done) {
-  return function(error) {
+function seleniumStart(wct: Config, opts: {args: string[], install: boolean}, done: (err?: any, port?: number) => void) {
+  return function(error?: any) {
     if (error) return done(error);
     freeport(function(error, port) {
       if (error) return done(error);
 
       // See below.
-      var log = [];
-      function onOutput(data) {
-        var message = data.toString();
+      const log: string[] = [];
+      function onOutput(data: any) {
+        const message = data.toString();
         log.push(message);
         wct.emit('log:debug', message);
       }
 
-      var config = {
-        version: SELENIUM_VERSION,
-        seleniumArgs: ['-port', port].concat(opts.args),
+      const config: selenium.StartOpts = {
+        seleniumArgs: ['-port', port.toString()].concat(opts.args),
         // Bookkeeping once the process starts.
-        spawnCb: function(server) {
+        spawnCb: function(server: child_process.ChildProcess) {
           // Make sure that we interrupt the selenium server ASAP.
           cleankill.onInterrupt(function(done) {
             server.kill();
@@ -80,7 +87,7 @@ function seleniumStart(wct, opts, done) {
       function install() {
         selenium.install({version: SELENIUM_VERSION, logger: onOutput}, function(error) {
           if (error) {
-            log.forEach(function(line) { wct.emit('log:info', line) });
+            log.forEach((line) => wct.emit('log:info', line));
             return done(error);
           }
           start();
@@ -90,15 +97,15 @@ function seleniumStart(wct, opts, done) {
       function start() {
         selenium.start(config, function(error) {
           if (error) {
-            log.forEach(function(line) { wct.emit('log:info', line) });
+            log.forEach((line) => wct.emit('log:info', line));
             return done(error);
           }
-          wct.emit('log:info', 'Selenium server running on port', chalk.yellow(port));
+          wct.emit('log:info', 'Selenium server running on port', chalk.yellow(port.toString()));
           done(null, port);
         });
       }
 
-      if(opts.install) {
+      if (opts.install) {
         install();
       } else {
         start();
