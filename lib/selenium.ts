@@ -41,13 +41,13 @@ export function checkSeleniumEnvironment(done: (err?: any) => void) {
 }
 
 export function startSeleniumServer(wct: wct.Context, args: string[], done: (err?: any, port?: number) => void) {
-  wct.emit('log:info', 'Starting Selenium server for local browsers now ok.');
+  wct.emit('log:info', 'Starting Selenium server for local browsers');
   const opts = {args: args, install: false};
   checkSeleniumEnvironment(seleniumStart(wct, opts, done));
 }
 
 export function installAndStartSeleniumServer(wct: wct.Context, args: string[], done: (err?: any, port?: number) => void) {
-  wct.emit('log:info', 'Installing and starting Selenium server for local browsers now ok yes.');
+  wct.emit('log:info', 'Installing and starting Selenium server for local browsers');
   const opts = {args: args, install: true};
   checkSeleniumEnvironment(seleniumStart(wct, opts, done));
 }

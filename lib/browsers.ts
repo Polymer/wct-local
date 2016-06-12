@@ -43,37 +43,35 @@ export function normalize(browsers: (string | {browserName: string})[]) {
  * @param {!Array<string>} names
  * @param {function(*, Array<!Object>)} done
  */
-export function expand(names: string[], done: (err: any, capabilities?: wd.Capabilities[]) => void) {
+export async function expand(names: string[]) {
   if (names.indexOf('all') !== -1) {
     names = [];
   }
 
-  const unsupported = _.difference(names, module.exports.supported());
+  const unsupported = _.difference(names, supported());
   if (unsupported.length > 0) {
-    return done(
+    throw new Error(
         'The following browsers are unsupported: ' + unsupported.join(', ') + '. ' +
-        '(All supported browsers: ' + module.exports.supported().join(', ') + ')'
+        '(All supported browsers: ' + supported().join(', ') + ')'
     );
   }
 
-  detect(function(error, installedByName) {
-    if (error) return done(error);
-    const installed = _.keys(installedByName);
-    // Opting to use everything?
-    if (names.length === 0) {
-      names = installed;
-    }
+  const installedByName = await detect();
+  const installed = _.keys(installedByName);
+  // Opting to use everything?
+  if (names.length === 0) {
+    names = installed;
+  }
 
-    const missing   = _.difference(names, installed);
-    if (missing.length > 0) {
-      return done(
-          'The following browsers were not found: ' + missing.join(', ') + '. ' +
-          '(All installed browsers found: ' + installed.join(', ') + ')'
-      );
-    }
+  const missing   = _.difference(names, installed);
+  if (missing.length > 0) {
+    throw new Error(
+        'The following browsers were not found: ' + missing.join(', ') + '. ' +
+        '(All installed browsers found: ' + installed.join(', ') + ')'
+    );
+  }
 
-    done(null, names.map(function(n) { return installedByName[n]; }));
-  });
+  return names.map(function(n) { return installedByName[n]; });
 }
 
 /**
@@ -81,29 +79,42 @@ export function expand(names: string[], done: (err: any, capabilities?: wd.Capab
  *
  * @param {function(*, Object<string, !Object>)} done
  */
-export function detect(done: (err: any, capabilities?: {[browser: string]: wd.Capabilities}) => void) {
-  launchpad.local(function(error, launcher) {
-    if (error) return done(error);
-    launcher.browsers(function(error, browsers) {
-      if (error) return done(error);
-
-      const results: {[browser: string]: wd.Capabilities} = {};
-      for (const browser of browsers) {
-        if (!LAUNCHPAD_TO_SELENIUM[browser.name]) continue;
-        const converter = LAUNCHPAD_TO_SELENIUM[browser.name];
-        results[browser.name] = converter(browser);
+async function detect() {
+  const launcher = await new Promise<launchpad.Launcher>((resolve, reject) => {
+    launchpad.local((error, launcher) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(launcher);
       }
-
-      done(null, results);
     });
   });
+
+  const browsers = await new Promise<launchpad.Browser[]>((resolve, reject) => {
+    launcher.browsers((error, browsers) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(browsers);
+      }
+    });
+  });
+
+  const results: {[browser: string]: wd.Capabilities} = {};
+  for (const browser of browsers) {
+    if (!LAUNCHPAD_TO_SELENIUM[browser.name]) continue;
+    const converter = LAUNCHPAD_TO_SELENIUM[browser.name];
+    results[browser.name] = converter(browser);
+  }
+
+  return results;
 }
 
 /**
  * @return {!Array<string>} A list of local browser names that are supported by
  *     the current environment.
  */
-export function supported() {
+function supported() {
   return _.intersection(
       Object.keys(launchpad.local.platform),
       Object.keys(LAUNCHPAD_TO_SELENIUM));
