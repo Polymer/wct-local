@@ -68,27 +68,31 @@ const plugin : wct.PluginInterface = (wct: wct.Context, pluginOptions: PluginOpt
   wct.hook('prepare', function(done: (err?: any)=> void) {
     if (!eachCapabilities.length) return done();
 
-    wct.emitHook('prepare:selenium', function(error) {
-      if (error) return done(error);
-      selenium.checkSeleniumEnvironment(function(error) {
-        if (error) return done(error);
-        var start = selenium.installAndStartSeleniumServer;
-        if(pluginOptions.skipSeleniumInstall) {
-          start = selenium.startSeleniumServer;
-        }
-        start(wct, pluginOptions.seleniumArgs, function(error, port) {
-          if (error) return done(error);
-          updatePort(eachCapabilities, port);
-          done();
-        });
-      });
+    const prepareSelenium = async function() {
+      await selenium.checkSeleniumEnvironment();
+
+      var start = selenium.installAndStartSeleniumServer;
+      if(pluginOptions.skipSeleniumInstall) {
+        start = selenium.startSeleniumServer;
+      }
+      const port = await start(wct, pluginOptions.seleniumArgs);
+      updatePort(eachCapabilities, port);
+    }
+
+    wct.emitHook('prepare:selenium', async function(error) {
+      if (error) {
+        return done(error);
+      }
+      prepareSelenium().then(() => done(), (error) => done(error));
     });
 
   });
-  // I can't actually find the code that emits this event...
+  // NOTE(rictic): I can't actually find the code that emits this event...
+  //     There doesn't seem to be an obvious source in either wct or this
+  //     plugin.
   wct.on('browser-start', (
         def: wct.BrowserDef, data: {url: string}, stats: wct.Stats,
-        browser: any /* TODO: what is browser here? */) => {
+        browser: any /* TODO(rictic): what is browser here? */) => {
     if (!browser) return;
     browser.maximize(function(err: any) {
       if (err) {
