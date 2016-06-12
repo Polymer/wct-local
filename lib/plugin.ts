@@ -31,7 +31,7 @@ const plugin : wct.PluginInterface = (wct: wct.Context, pluginOptions: PluginOpt
   // Note that we run this hook late to allow other plugins to append their
   // browsers. We don't want the default behavior (run all local browsers) to
   // kick in if someone has specified browsers via another plugin.
-  const configure = async () => {
+  const onConfigure = async () => {
     pluginOptions.seleniumArgs = pluginOptions.seleniumArgs || [];
     pluginOptions.skipSeleniumInstall = pluginOptions.skipSeleniumInstall || false;
 
@@ -62,11 +62,10 @@ const plugin : wct.PluginInterface = (wct: wct.Context, pluginOptions: PluginOpt
     activeBrowsers.push.apply(activeBrowsers, expanded);
   }
   wct.hookLate('configure', function(done: (err?: any)=> void) {
-    configure().then(() => done(), (err) => done(err));
+    onConfigure().then(() => done(), (err) => done(err));
   });
 
-
-  const prepare = async () => {
+  const onPrepare = async () => {
     if (!eachCapabilities.length) {
       return;
     }
@@ -83,7 +82,7 @@ const plugin : wct.PluginInterface = (wct: wct.Context, pluginOptions: PluginOpt
     updatePort(eachCapabilities, port);
   }
   wct.hook('prepare', function(done: (err?: any)=> void) {
-    prepare().then(() => done(), (err) => done(err));
+    onPrepare().then(() => done(), (err) => done(err));
   });
 
   // NOTE(rictic): I can't actually find the code that emits this event...
