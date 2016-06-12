@@ -53,15 +53,12 @@ declare module 'wd' {
     };
   }
 
-  export function remote(
-      hostnameOrUrl: string, port?: number,
-      username?: string, password?: string): Browser;
-  export function remote(
-      options: {hostname: string, port?: number,
-                auth?: string, path?: string, }
-      ): Browser;
-  export function remote(
-      options: {host: string, port?: number,
-                username?: string, accesskey?: string, path?: string, }
-      ): Browser;
+  export type ValidHost =
+      string |
+      {hostname: string, port?: number,
+       auth?: string, path?: string, } |
+      {host: string, port?: number,
+       username?: string, accesskey?: string, path?: string, };
+
+  export function remote(hostnameOrUrl: ValidHost): Browser;
 }

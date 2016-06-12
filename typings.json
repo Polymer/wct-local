@@ -5,6 +5,7 @@
     "lodash": "registry:npm/lodash#4.0.0+20160416211519"
   },
   "globalDependencies": {
+    "express": "registry:dt/express#4.0.0+20160317120654",
     "node": "registry:env/node#4.0.0+20160610031852"
   }
 }

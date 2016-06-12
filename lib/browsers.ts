@@ -25,7 +25,7 @@ const LAUNCHPAD_TO_SELENIUM: {[browser: string]: (browser: launchpad.Browser) =>
  * @param {Array<string|!Object>} browsers
  * @return {!Array<string>}
  */
-function normalize(browsers: (string | {browserName: string})[]) {
+export function normalize(browsers: (string | {browserName: string})[]) {
   return (browsers || []).map(function(browser) {
     if (typeof browser === 'string') {
       return browser;
@@ -43,7 +43,7 @@ function normalize(browsers: (string | {browserName: string})[]) {
  * @param {!Array<string>} names
  * @param {function(*, Array<!Object>)} done
  */
-function expand(names: string[], done: (err: any, capabilities?: wd.Capabilities[]) => void) {
+export function expand(names: string[], done: (err: any, capabilities?: wd.Capabilities[]) => void) {
   if (names.indexOf('all') !== -1) {
     names = [];
   }
@@ -103,7 +103,7 @@ export function detect(done: (err: any, capabilities?: {[browser: string]: wd.Ca
  * @return {!Array<string>} A list of local browser names that are supported by
  *     the current environment.
  */
-function supported() {
+export function supported() {
   return _.intersection(
       Object.keys(launchpad.local.platform),
       Object.keys(LAUNCHPAD_TO_SELENIUM));
@@ -165,10 +165,3 @@ function internetExplorer(browser: launchpad.Browser): wd.Capabilities {
     'version':     browser.version,
   };
 }
-
-module.exports = {
-  normalize: normalize,
-  detect:    detect,
-  expand:    expand,
-  supported: supported,
-};
