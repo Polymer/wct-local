@@ -7,10 +7,11 @@
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
-var _         = require('lodash');
-var launchpad = require('launchpad');
+import * as _ from 'lodash';
+import * as launchpad from 'launchpad';
+import * as wd from 'wd';
 
-var LAUNCHPAD_TO_SELENIUM = {
+const LAUNCHPAD_TO_SELENIUM: {[browser: string]: (browser: launchpad.Browser) => wd.Capabilities} = {
   chrome:  chrome,
   canary:  chrome,
   firefox: firefox,
@@ -24,9 +25,12 @@ var LAUNCHPAD_TO_SELENIUM = {
  * @param {Array<string|!Object>} browsers
  * @return {!Array<string>}
  */
-function normalize(browsers) {
+function normalize(browsers: (string | {browserName: string})[]) {
   return (browsers || []).map(function(browser) {
-    return browser.browserName || browser;
+    if (typeof browser === 'string') {
+      return browser;
+    }
+    return browser.browserName;
   });
 }
 
@@ -39,12 +43,12 @@ function normalize(browsers) {
  * @param {!Array<string>} names
  * @param {function(*, Array<!Object>)} done
  */
-function expand(names, done) {
+function expand(names: string[], done: (err: any, capabilities?: wd.Capabilities[]) => void) {
   if (names.indexOf('all') !== -1) {
     names = [];
   }
 
-  var unsupported = _.difference(names, module.exports.supported());
+  const unsupported = _.difference(names, module.exports.supported());
   if (unsupported.length > 0) {
     return done(
         'The following browsers are unsupported: ' + unsupported.join(', ') + '. ' +
@@ -52,15 +56,15 @@ function expand(names, done) {
     );
   }
 
-  module.exports.detect(function(error, installedByName) {
+  detect(function(error, installedByName) {
     if (error) return done(error);
-    var installed = _.keys(installedByName);
+    const installed = _.keys(installedByName);
     // Opting to use everything?
     if (names.length === 0) {
       names = installed;
     }
 
-    var missing   = _.difference(names, installed);
+    const missing   = _.difference(names, installed);
     if (missing.length > 0) {
       return done(
           'The following browsers were not found: ' + missing.join(', ') + '. ' +
@@ -77,16 +81,17 @@ function expand(names, done) {
  *
  * @param {function(*, Object<string, !Object>)} done
  */
-function detect(done) {
+export function detect(done: (err: any, capabilities?: {[browser: string]: wd.Capabilities}) => void) {
   launchpad.local(function(error, launcher) {
     if (error) return done(error);
     launcher.browsers(function(error, browsers) {
       if (error) return done(error);
 
-      var results = {};
-      for (var i = 0, browser; browser = browsers[i]; i++) {
+      const results: {[browser: string]: wd.Capabilities} = {};
+      for (const browser of browsers) {
         if (!LAUNCHPAD_TO_SELENIUM[browser.name]) continue;
-        results[browser.name] = LAUNCHPAD_TO_SELENIUM[browser.name](browser);
+        const converter = LAUNCHPAD_TO_SELENIUM[browser.name];
+        results[browser.name] = converter(browser);
       }
 
       done(null, results);
@@ -99,7 +104,9 @@ function detect(done) {
  *     the current environment.
  */
 function supported() {
-  return _.intersection(_.keys(launchpad.local.platform), _.keys(LAUNCHPAD_TO_SELENIUM));
+  return _.intersection(
+      Object.keys(launchpad.local.platform),
+      Object.keys(LAUNCHPAD_TO_SELENIUM));
 }
 
 // Launchpad -> Selenium
@@ -108,7 +115,7 @@ function supported() {
  * @param {!Object} browser A launchpad browser definition.
  * @return {!Object} A selenium capabilities object.
  */
-function chrome(browser) {
+function chrome(browser: launchpad.Browser): wd.Capabilities {
   return {
     'browserName': 'chrome',
     'version':     browser.version.match(/\d+/)[0],
@@ -123,7 +130,7 @@ function chrome(browser) {
  * @param {!Object} browser A launchpad browser definition.
  * @return {!Object} A selenium capabilities object.
  */
-function firefox(browser) {
+function firefox(browser: launchpad.Browser): wd.Capabilities {
   return {
     'browserName':    'firefox',
     'version':        browser.version.match(/\d+/)[0],
@@ -135,7 +142,7 @@ function firefox(browser) {
  * @param {!Object} browser A launchpad browser definition.
  * @return {!Object} A selenium capabilities object.
  */
-function safari(browser) {
+function safari(browser: launchpad.Browser): wd.Capabilities {
   // SafariDriver doesn't appear to support custom binary paths. Does Safari?
   return {
     'browserName': 'safari',
@@ -151,7 +158,7 @@ function safari(browser) {
  * @param {!Object} browser A launchpad browser definition.
  * @return {!Object} A selenium capabilities object.
  */
-function internetExplorer(browser) {
+function internetExplorer(browser: launchpad.Browser): wd.Capabilities {
   return {
     'browserName': 'internet explorer',
     'version':     browser.version,

@@ -23,7 +23,7 @@ interface Config {
 
 type Args = string[];
 
-function checkSeleniumEnvironment(done: (err?: any) => void) {
+export function checkSeleniumEnvironment(done: (err?: any) => void) {
   which('java', function(error) {
     if (!error) return done();
 
@@ -43,13 +43,13 @@ function checkSeleniumEnvironment(done: (err?: any) => void) {
   });
 }
 
-function startSeleniumServer(wct: Config, args: string[], done: (err?: any) => void) {
+export function startSeleniumServer(wct: Config, args: string[], done: (err?: any) => void) {
   wct.emit('log:info', 'Starting Selenium server for local browsers now ok.');
   const opts = {args: args, install: false};
   checkSeleniumEnvironment(seleniumStart(wct, opts, done));
 }
 
-function installAndStartSeleniumServer(wct: Config, args: string[], done: (err?: any) => void) {
+export function installAndStartSeleniumServer(wct: Config, args: string[], done: (err?: any) => void) {
   wct.emit('log:info', 'Installing and starting Selenium server for local browsers now ok yes.');
   const opts = {args: args, install: true};
   checkSeleniumEnvironment(seleniumStart(wct, opts, done));
@@ -113,9 +113,3 @@ function seleniumStart(wct: Config, opts: {args: string[], install: boolean}, do
     });
   };
 }
-
-module.exports = {
-  checkSeleniumEnvironment:         checkSeleniumEnvironment,
-  startSeleniumServer:              startSeleniumServer,
-  installAndStartSeleniumServer:    installAndStartSeleniumServer
-};
