@@ -10,22 +10,23 @@
         "noImplicitAny": true,
         "removeComments": false,
         "preserveConstEnums": true,
-        "suppressImplicitAnyIndexErrors": true
+        "suppressImplicitAnyIndexErrors": true,
+        "outDir": "lib"
     },
     "exclude": [
         "node_modules"
     ],
     "filesGlob": [
-        "lib/*.ts",
+        "src/*.ts",
         "!node_modules/**",
         "custom_typings/*.d.ts",
         "typings/index.d.ts",
         "node_modules/typescript/lib/lib.core.es6.d.ts"
     ],
     "files": [
-        "lib/browsers.ts",
-        "lib/plugin.ts",
-        "lib/selenium.ts",
+        "src/browsers.ts",
+        "src/plugin.ts",
+        "src/selenium.ts",
         "custom_typings/cleankill.d.ts",
         "custom_typings/freeport.d.ts",
         "custom_typings/launchpad.d.ts",
