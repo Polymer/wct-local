@@ -16,6 +16,11 @@
   },
   "main": "lib/plugin.js",
   "scripts": {
+    "lint": "gulp lint",
+    "init": "gulp init",
+    "build": "gulp build",
+    "test": "gulp test",
+    "prepublish": "gulp build-all",
     "postinstall": "node scripts/postinstall.js"
   },
   "wct-plugin": {
@@ -68,7 +73,7 @@
     "which": "^1.0.8"
   },
   "engines": {
-    "node": ">=0.12"
+    "node": ">=4.0"
   },
   "selenium-version": "2.53.0"
 }

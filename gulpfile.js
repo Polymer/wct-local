@@ -59,7 +59,7 @@ gulp.task('tslint', () =>
     .pipe(tslint.report('verbose')));
 
 gulp.task('eslint', () =>
-  gulp.src('test/**/*.js', 'scripts/**/*.js')
+  gulp.src(['test/**/*.js', 'scripts/**/*.js'])
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError()));
