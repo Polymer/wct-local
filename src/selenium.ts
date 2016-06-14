@@ -10,11 +10,12 @@
 import * as chalk from 'chalk';
 import * as cleankill from 'cleankill';
 import * as freeport from 'freeport';
-import * as selenium from 'selenium-standalone';
+import * as selenium_old from 'selenium-standalone';
 import * as which from 'which';
 import * as child_process from 'child_process';
 import * as wct from 'wct';
 import * as promisify from 'promisify-node';
+import * as selenium from 'selenium-webdriver';
 
 const SELENIUM_VERSION: string = require('../package.json')['selenium-version'];
 
@@ -22,29 +23,10 @@ const SELENIUM_VERSION: string = require('../package.json')['selenium-version'];
 type Args = string[];
 
 export async function checkSeleniumEnvironment() {
-  try {
-    await promisify(which)('java');
-    return;
-  } catch (error) { /* Handled below */}
-
-  let message = 'java is not present on your PATH.';
-  if (process.platform === 'win32') {
-    message = message + '\n\n  Please install it: https://java.com/download/\n\n';
-  } else if (process.platform === 'linux') {
-    try {
-      await promisify(which)('apt-get');
-      message = message + '\n\n  sudo apt-get install default-jre\n\n';
-    } catch (error) {
-      // There's not a clear default package for yum distros.
-    }
-  }
-
-  throw message;
 }
 
 export async function startSeleniumServer(wct: wct.Context, args: string[]) {
   wct.emit('log:info', 'Starting Selenium server for local browsers');
-  await checkSeleniumEnvironment();
 
   const opts = {args: args, install: false};
   return seleniumStart(wct, opts);
@@ -52,7 +34,6 @@ export async function startSeleniumServer(wct: wct.Context, args: string[]) {
 
 export async function installAndStartSeleniumServer(wct: wct.Context, args: string[]) {
   wct.emit('log:info', 'Installing and starting Selenium server for local browsers');
-  await checkSeleniumEnvironment();
 
   const opts = {args: args, install: true};
   return seleniumStart(wct, opts);
@@ -69,7 +50,7 @@ async function seleniumStart(wct: wct.Context, opts: {args: string[], install: b
     wct.emit('log:debug', message);
   }
 
-  const config: selenium.StartOpts = {
+  const config: selenium_old.StartOpts = {
     seleniumArgs: ['-port', port.toString()].concat(opts.args),
     // Bookkeeping once the process starts.
     spawnCb: function(server: child_process.ChildProcess) {
@@ -86,7 +67,7 @@ async function seleniumStart(wct: wct.Context, opts: {args: string[], install: b
 
   if (opts.install) {
     try {
-      await promisify(selenium.install)({version: SELENIUM_VERSION, logger: onOutput});
+      await promisify(selenium_old.install)({version: SELENIUM_VERSION, logger: onOutput});
     } catch (error) {
       log.forEach((line) => wct.emit('log:info', line));
       throw error;
@@ -94,7 +75,7 @@ async function seleniumStart(wct: wct.Context, opts: {args: string[], install: b
   }
 
   try {
-    await promisify(selenium.start)(config);
+    await promisify(selenium_old.start)(config);
   } catch (error) {
     log.forEach((line) => wct.emit('log:info', line));
     throw error;

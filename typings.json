@@ -6,6 +6,7 @@
   },
   "globalDependencies": {
     "express": "registry:dt/express#4.0.0+20160317120654",
-    "node": "registry:env/node#4.0.0+20160610031852"
+    "node": "registry:env/node#4.0.0+20160610031852",
+    "selenium-webdriver": "registry:dt/selenium-webdriver#2.44.0+20160317120654"
   }
 }

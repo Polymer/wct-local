@@ -25,6 +25,7 @@
     ],
     "files": [
         "src/browsers.ts",
+        "src/playing.ts",
         "src/plugin.ts",
         "src/selenium.ts",
         "custom_typings/cleankill.d.ts",
