@@ -20,7 +20,8 @@ interface PluginOptions {
 }
 
 /** WCT plugin that enables support for local browsers via Selenium. */
-const plugin: wct.PluginInterface = (wct: wct.Context, pluginOptions: PluginOptions) => {
+const plugin: wct.PluginInterface = (
+      wct: wct.Context, pluginOptions: PluginOptions) => {
 
   // The capabilities objects for browsers to run. We don't know the port until
   // `prepare`, so we've gotta hang onto them.
@@ -33,7 +34,8 @@ const plugin: wct.PluginInterface = (wct: wct.Context, pluginOptions: PluginOpti
   // kick in if someone has specified browsers via another plugin.
   const onConfigure = async () => {
     pluginOptions.seleniumArgs = pluginOptions.seleniumArgs || [];
-    pluginOptions.skipSeleniumInstall = pluginOptions.skipSeleniumInstall || false;
+    pluginOptions.skipSeleniumInstall =
+        pluginOptions.skipSeleniumInstall || false;
 
     let names = browsers.normalize(pluginOptions.browsers);
     if (names.length > 0) {
@@ -54,7 +56,9 @@ const plugin: wct.PluginInterface = (wct: wct.Context, pluginOptions: PluginOpti
     // until we've got a port chosen for the Selenium server.
     const expanded = await browsers.expand(names);
 
-    wct.emit('log:debug', 'Expanded local browsers:', names, 'into capabilities:', expanded);
+    wct.emit(
+        'log:debug',
+        'Expanded local browsers:', names, 'into capabilities:', expanded);
     eachCapabilities = <wct.BrowserDef[]>expanded;
     // We are careful to append these to the configuration object, even though
     // we don't know the selenium port yet. This allows WCT to give a useful

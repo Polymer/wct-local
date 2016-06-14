@@ -11,7 +11,8 @@ import * as launchpad from 'launchpad';
 import * as wd from 'wd';
 import * as promisify from 'promisify-node';
 
-const LAUNCHPAD_TO_SELENIUM: {[browser: string]: (browser: launchpad.Browser) => wd.Capabilities} = {
+type LaunchpadToWebdriver = (browser: launchpad.Browser) => wd.Capabilities;
+const LAUNCHPAD_TO_SELENIUM: {[browser: string]: LaunchpadToWebdriver} = {
   chrome:  chrome,
   canary:  chrome,
   firefox: firefox,
@@ -55,8 +56,8 @@ export async function expand(names: string[]) {
   const unsupported = difference(names, supported());
   if (unsupported.length > 0) {
     throw new Error(
-        'The following browsers are unsupported: ' + unsupported.join(', ') + '. ' +
-        '(All supported browsers: ' + supported().join(', ') + ')'
+        `The following browsers are unsupported: ${unsupported.join(', ')}. ` +
+        `(All supported browsers: ${supported().join(', ')})`
     );
   }
 
@@ -70,8 +71,8 @@ export async function expand(names: string[]) {
   const missing = difference(names, installed);
   if (missing.length > 0) {
     throw new Error(
-        'The following browsers were not found: ' + missing.join(', ') + '. ' +
-        '(All installed browsers found: ' + installed.join(', ') + ')'
+        `The following browsers were not found: ${missing.join(', ')}. ` +
+        `(All installed browsers found: ${installed.join(', ')})`
     );
   }
 

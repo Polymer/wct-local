@@ -29,7 +29,7 @@ export async function checkSeleniumEnvironment() {
 
   let message = 'java is not present on your PATH.';
   if (process.platform === 'win32') {
-    message = message + '\n\n  Please install it: https://java.com/download/\n\n';
+    message += `\n\n  Please install it: https://java.com/download/\n\n`;
   } else if (process.platform === 'linux') {
     try {
       await promisify(which)('apt-get');
@@ -50,15 +50,19 @@ export async function startSeleniumServer(wct: wct.Context, args: string[]) {
   return seleniumStart(wct, opts);
 }
 
-export async function installAndStartSeleniumServer(wct: wct.Context, args: string[]) {
-  wct.emit('log:info', 'Installing and starting Selenium server for local browsers');
+export async function installAndStartSeleniumServer(
+      wct: wct.Context, args: string[]) {
+  wct.emit(
+      'log:info', 'Installing and starting Selenium server for local browsers');
   await checkSeleniumEnvironment();
 
   const opts = {args: args, install: true};
   return seleniumStart(wct, opts);
 }
 
-async function seleniumStart(wct: wct.Context, opts: {args: string[], install: boolean}): Promise<number> {
+async function seleniumStart(
+      wct: wct.Context,
+      opts: {args: string[], install: boolean}): Promise<number> {
   const port = await promisify(freeport)();
 
   // See below.
@@ -86,7 +90,8 @@ async function seleniumStart(wct: wct.Context, opts: {args: string[], install: b
 
   if (opts.install) {
     try {
-      await promisify(selenium.install)({version: SELENIUM_VERSION, logger: onOutput});
+      await promisify(selenium.install)(
+          {version: SELENIUM_VERSION, logger: onOutput});
     } catch (error) {
       log.forEach((line) => wct.emit('log:info', line));
       throw error;
@@ -100,6 +105,8 @@ async function seleniumStart(wct: wct.Context, opts: {args: string[], install: b
     throw error;
   }
 
-  wct.emit('log:info', 'Selenium server running on port', chalk.yellow(port.toString()));
+  wct.emit(
+      'log:info',
+      'Selenium server running on port', chalk.yellow(port.toString()));
   return port;
 }
