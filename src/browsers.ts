@@ -7,7 +7,6 @@
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
-import * as _ from 'lodash';
 import * as launchpad from 'launchpad';
 import * as wd from 'wd';
 import * as promisify from 'promisify-node';
@@ -35,6 +34,10 @@ export function normalize(browsers: (string | {browserName: string})[]) {
   });
 }
 
+function difference<T>(source: T[], toRemove: T[]): T[] {
+  return source.filter((value) => toRemove.indexOf(value) < 0);
+}
+
 /**
  * Expands an array of browser identifiers for locally installed browsers into
  * their webdriver capabilities objects.
@@ -49,7 +52,7 @@ export async function expand(names: string[]) {
     names = [];
   }
 
-  const unsupported = _.difference(names, supported());
+  const unsupported = difference(names, supported());
   if (unsupported.length > 0) {
     throw new Error(
         'The following browsers are unsupported: ' + unsupported.join(', ') + '. ' +
@@ -58,13 +61,13 @@ export async function expand(names: string[]) {
   }
 
   const installedByName = await detect();
-  const installed = _.keys(installedByName);
+  const installed = Object.keys(installedByName);
   // Opting to use everything?
   if (names.length === 0) {
     names = installed;
   }
 
-  const missing   = _.difference(names, installed);
+  const missing = difference(names, installed);
   if (missing.length > 0) {
     throw new Error(
         'The following browsers were not found: ' + missing.join(', ') + '. ' +
@@ -99,9 +102,8 @@ async function detect() {
  *     the current environment.
  */
 function supported() {
-  return _.intersection(
-      Object.keys(launchpad.local.platform),
-      Object.keys(LAUNCHPAD_TO_SELENIUM));
+  return Object.keys(launchpad.local.platform).filter(
+      (key) => key in LAUNCHPAD_TO_SELENIUM);
 }
 
 // Launchpad -> Selenium
