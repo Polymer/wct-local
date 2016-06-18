@@ -35,10 +35,6 @@ export function normalize(browsers: (string | {browserName: string})[]) {
   });
 }
 
-function difference<T>(source: T[], toRemove: T[]): T[] {
-  return source.filter((value) => toRemove.indexOf(value) < 0);
-}
-
 /**
  * Expands an array of browser identifiers for locally installed browsers into
  * their webdriver capabilities objects.
@@ -161,4 +157,9 @@ function internetExplorer(browser: launchpad.Browser): wd.Capabilities {
     'browserName': 'internet explorer',
     'version':     browser.version,
   };
+}
+
+/** Filter out all elements from toRemove from source. */
+function difference<T>(source: T[], toRemove: T[]): T[] {
+  return source.filter((value) => toRemove.indexOf(value) < 0);
 }
