@@ -7,12 +7,12 @@
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
-import * as _ from 'lodash';
 import * as launchpad from 'launchpad';
 import * as wd from 'wd';
 import * as promisify from 'promisify-node';
 
-const LAUNCHPAD_TO_SELENIUM: {[browser: string]: (browser: launchpad.Browser) => wd.Capabilities} = {
+type LaunchpadToWebdriver = (browser: launchpad.Browser) => wd.Capabilities;
+const LAUNCHPAD_TO_SELENIUM: {[browser: string]: LaunchpadToWebdriver} = {
   chrome:  chrome,
   canary:  chrome,
   firefox: firefox,
@@ -49,26 +49,26 @@ export async function expand(names: string[]) {
     names = [];
   }
 
-  const unsupported = _.difference(names, supported());
+  const unsupported = difference(names, supported());
   if (unsupported.length > 0) {
     throw new Error(
-        'The following browsers are unsupported: ' + unsupported.join(', ') + '. ' +
-        '(All supported browsers: ' + supported().join(', ') + ')'
+        `The following browsers are unsupported: ${unsupported.join(', ')}. ` +
+        `(All supported browsers: ${supported().join(', ')})`
     );
   }
 
   const installedByName = await detect();
-  const installed = _.keys(installedByName);
+  const installed = Object.keys(installedByName);
   // Opting to use everything?
   if (names.length === 0) {
     names = installed;
   }
 
-  const missing   = _.difference(names, installed);
+  const missing = difference(names, installed);
   if (missing.length > 0) {
     throw new Error(
-        'The following browsers were not found: ' + missing.join(', ') + '. ' +
-        '(All installed browsers found: ' + installed.join(', ') + ')'
+        `The following browsers were not found: ${missing.join(', ')}. ` +
+        `(All installed browsers found: ${installed.join(', ')})`
     );
   }
 
@@ -78,9 +78,9 @@ export async function expand(names: string[]) {
 /**
  * Detects any locally installed browsers that we support.
  *
- * @param {function(*, Object<string, !Object>)} done
+ * Exported for testabilty in wct.
  */
-async function detect() {
+export async function detect() {
   const launcher = await promisify(launchpad.local)();
   const browsers = await promisify(launcher.browsers)();
 
@@ -95,13 +95,14 @@ async function detect() {
 }
 
 /**
- * @return {!Array<string>} A list of local browser names that are supported by
+ * Exported for testabilty in wct.
+ *
+ * @return A list of local browser names that are supported by
  *     the current environment.
  */
-function supported() {
-  return _.intersection(
-      Object.keys(launchpad.local.platform),
-      Object.keys(LAUNCHPAD_TO_SELENIUM));
+export function supported() {
+  return Object.keys(launchpad.local.platform).filter(
+      (key) => key in LAUNCHPAD_TO_SELENIUM);
 }
 
 // Launchpad -> Selenium
@@ -130,7 +131,6 @@ function firefox(browser: launchpad.Browser): wd.Capabilities {
     'browserName':    'firefox',
     'version':        browser.version.match(/\d+/)[0],
     'firefox_binary': browser.binPath,
-    'marionette': true
   };
 }
 
@@ -159,4 +159,9 @@ function internetExplorer(browser: launchpad.Browser): wd.Capabilities {
     'browserName': 'internet explorer',
     'version':     browser.version,
   };
+}
+
+/** Filter out all elements from toRemove from source. */
+function difference<T>(source: T[], toRemove: T[]): T[] {
+  return source.filter((value) => toRemove.indexOf(value) < 0);
 }

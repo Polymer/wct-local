@@ -1,6 +1,6 @@
 {
   "name": "wct-local",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "WCT plugin that enables support for local browsers via Selenium",
   "keywords": [
     "wct",
@@ -67,7 +67,6 @@
     "cleankill": "^1.0.0",
     "freeport": "^1.0.4",
     "launchpad": "^0.5.0",
-    "lodash": "^3.0.1",
     "promisify-node": "^0.4.0",
     "selenium-standalone": "azakus/selenium-standalone#firefox-marionette-driver",
     "selenium-webdriver": "^2.53.2",
