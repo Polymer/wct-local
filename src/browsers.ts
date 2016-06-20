@@ -78,9 +78,9 @@ export async function expand(names: string[]) {
 /**
  * Detects any locally installed browsers that we support.
  *
- * @param {function(*, Object<string, !Object>)} done
+ * Exported for testabilty in wct.
  */
-async function detect() {
+export async function detect() {
   const launcher = await promisify(launchpad.local)();
   const browsers = await promisify(launcher.browsers)();
 
@@ -95,10 +95,12 @@ async function detect() {
 }
 
 /**
- * @return {!Array<string>} A list of local browser names that are supported by
+ * Exported for testabilty in wct.
+ *
+ * @return A list of local browser names that are supported by
  *     the current environment.
  */
-function supported() {
+export function supported() {
   return Object.keys(launchpad.local.platform).filter(
       (key) => key in LAUNCHPAD_TO_SELENIUM);
 }

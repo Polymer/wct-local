@@ -25,7 +25,7 @@ export async function checkSeleniumEnvironment() {
   try {
     await promisify(which)('java');
     return;
-  } catch (error) { /* Handled below */}
+  } catch (error) { /* Handled below */ }
 
   let message = 'java is not present on your PATH.';
   if (process.platform === 'win32') {
