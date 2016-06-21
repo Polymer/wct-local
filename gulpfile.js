@@ -75,7 +75,7 @@ gulp.task('depcheck', () => new Promise((resolve, reject) => {
     }
 
     if (result.dependencies.length) {
-      console.log('Unused dependencies:', unused.dependencies);
+      console.log('Unused dependencies:', result.dependencies);
       reject(new Error('Unused dependencies'));
       return;
     }

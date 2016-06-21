@@ -27,13 +27,10 @@
         "src/browsers.ts",
         "src/playing.ts",
         "src/plugin.ts",
-        "custom_typings/cleankill.d.ts",
-        "custom_typings/freeport.d.ts",
         "custom_typings/launchpad.d.ts",
         "custom_typings/promisify-node.d.ts",
         "custom_typings/wct.d.ts",
         "custom_typings/wd.d.ts",
-        "custom_typings/which.d.ts",
         "typings/index.d.ts"
     ],
     "atom": {

@@ -63,13 +63,9 @@
     "typescript": "^1.8.10"
   },
   "dependencies": {
-    "chalk": "^1.1.1",
-    "cleankill": "^1.0.0",
-    "freeport": "^1.0.4",
     "launchpad": "^0.5.0",
     "promisify-node": "^0.4.0",
-    "selenium-webdriver": "^2.53.2",
-    "which": "^1.0.8"
+    "selenium-webdriver": "^2.53.2"
   },
   "engines": {
     "node": ">=4.0"
