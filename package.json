@@ -20,7 +20,8 @@
     "init": "gulp init",
     "build": "gulp build",
     "test": "gulp test",
-    "prepublish": "gulp build-all"
+    "prepublish": "gulp build-all",
+    "postinstall": "gulp build-all # DO NOT SUBMIT"
   },
   "wct-plugin": {
     "cli-options": {

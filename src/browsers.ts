@@ -10,8 +10,11 @@
 import * as launchpad from 'launchpad';
 import * as wd from 'wd';
 import * as promisify from 'promisify-node';
+import * as selenium from 'selenium-webdriver';
 
-type LaunchpadToWebdriver = (browser: launchpad.Browser) => wd.Capabilities;
+// Either is fine for selenium-webdriver's purposes.
+type Capabilities = (wd.Capabilities | selenium.Capabilities);
+type LaunchpadToWebdriver = (browser: launchpad.Browser) => Capabilities;
 const LAUNCHPAD_TO_SELENIUM: {[browser: string]: LaunchpadToWebdriver} = {
   chrome:  chrome,
   canary:  chrome,
@@ -84,7 +87,7 @@ export async function detect() {
   const launcher = await promisify(launchpad.local)();
   const browsers = await promisify(launcher.browsers)();
 
-  const results: {[browser: string]: wd.Capabilities} = {};
+  const results: {[browser: string]: Capabilities} = {};
   for (const browser of browsers) {
     if (!LAUNCHPAD_TO_SELENIUM[browser.name]) continue;
     const converter = LAUNCHPAD_TO_SELENIUM[browser.name];
@@ -114,7 +117,7 @@ export function supported() {
  * @param {!Object} browser A launchpad browser definition.
  * @return {!Object} A selenium capabilities object.
  */
-function chrome(browser: launchpad.Browser): wd.Capabilities {
+function chrome(browser: launchpad.Browser): Capabilities {
   return {
     'browserName': 'chrome',
     'version':     browser.version.match(/\d+/)[0],
@@ -129,23 +132,20 @@ function chrome(browser: launchpad.Browser): wd.Capabilities {
  * @param {!Object} browser A launchpad browser definition.
  * @return {!Object} A selenium capabilities object.
  */
-function firefox(browser: launchpad.Browser): wd.Capabilities {
+function firefox(browser: launchpad.Browser): Capabilities {
   const version = browser.version.match(/\d+/)[0];
-  if (version === '47') {
-    return null;  // Driving Firefox 47 doesn't work :(
-  }
-  return {
-    'browserName':    'firefox',
-    'version':        version,
-    'firefox_binary': browser.binPath,
-  };
+  const capabilities = selenium.Capabilities.firefox();
+  capabilities.set('marionette', true);
+  capabilities.set('version', version);
+  capabilities.set('firefox_binary', browser.binPath);
+  return capabilities;
 }
 
 /**
  * @param {!Object} browser A launchpad browser definition.
  * @return {!Object} A selenium capabilities object.
  */
-function safari(browser: launchpad.Browser): wd.Capabilities {
+function safari(browser: launchpad.Browser): Capabilities {
   // SafariDriver doesn't appear to support custom binary paths. Does Safari?
   return {
     'browserName': 'safari',
@@ -161,7 +161,7 @@ function safari(browser: launchpad.Browser): wd.Capabilities {
  * @param {!Object} browser A launchpad browser definition.
  * @return {!Object} A selenium capabilities object.
  */
-function internetExplorer(browser: launchpad.Browser): wd.Capabilities {
+function internetExplorer(browser: launchpad.Browser): Capabilities {
   return {
     'browserName': 'internet explorer',
     'version':     browser.version,
