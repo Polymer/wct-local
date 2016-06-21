@@ -8,7 +8,6 @@
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
 import * as browsers from './browsers';
-import * as selenium from './selenium';
 import * as webdriver from 'selenium-webdriver';
 import * as wd from 'wd';
 import * as wct from 'wct';
@@ -34,10 +33,6 @@ const plugin: wct.PluginInterface = (
   // browsers. We don't want the default behavior (run all local browsers) to
   // kick in if someone has specified browsers via another plugin.
   const onConfigure = async () => {
-    pluginOptions.seleniumArgs = pluginOptions.seleniumArgs || [];
-    pluginOptions.skipSeleniumInstall =
-        pluginOptions.skipSeleniumInstall || false;
-
     let names = browsers.normalize(pluginOptions.browsers);
     if (names.length > 0) {
       // We support comma separated browser identifiers for convenience.
@@ -77,14 +72,14 @@ const plugin: wct.PluginInterface = (
     await new Promise((resolve, reject) => {
       wct.emitHook('prepare:selenium', (e) => e ? reject(e) : resolve());
     });
-    await selenium.checkSeleniumEnvironment();
+    process.env.PATH = `${process.env.PATH}:${__dirname}/../drivers/`;
 
-    let start = selenium.installAndStartSeleniumServer;
-    if (pluginOptions.skipSeleniumInstall) {
-      start = selenium.startSeleniumServer;
+    for (const capability of eachCapabilities) {
+      const driver = new webdriver.Builder()
+          .withCapabilities(capability)
+          .build();
+      capability['selenium-webdriver'] = driver;
     }
-    const port = await start(wct, pluginOptions.seleniumArgs);
-    updatePort(eachCapabilities, port);
   };
   wct.hook('prepare', function(done: (err?: any) => void) {
     onPrepare().then(() => done(), (err) => done(err));
@@ -103,18 +98,4 @@ const plugin: wct.PluginInterface = (
 };
 
 // Utility
-
-/**
- * @param {!Array.<!Object>} eachCapabilities
- * @param {number} port
- */
-function updatePort(capabilities: wct.BrowserDef[], port: number) {
-  capabilities.forEach(function(capabilities) {
-    capabilities.url = {
-      hostname: '127.0.0.1',
-      port:     port,
-    };
-  });
-}
-
 module.exports = plugin;

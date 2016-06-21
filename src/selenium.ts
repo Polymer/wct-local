@@ -23,47 +23,25 @@ const SELENIUM_VERSION: string = require('../package.json')['selenium-version'];
 type Args = string[];
 
 export async function checkSeleniumEnvironment() {
-  try {
-    await promisify(which)('java');
-    return;
-  } catch (error) { /* Handled below */ }
-
-  let message = 'java is not present on your PATH.';
-  if (process.platform === 'win32') {
-    message += `\n\n  Please install it: https://java.com/download/\n\n`;
-  } else if (process.platform === 'linux') {
-    try {
-      await promisify(which)('apt-get');
-      message = message + '\n\n  sudo apt-get install default-jre\n\n';
-    } catch (error) {
-      // There's not a clear default package for yum distros.
-    }
-  }
-
-  throw message;
 }
 
 export async function startSeleniumServer(wct: wct.Context, args: string[]) {
   wct.emit('log:info', 'Starting Selenium server for local browsers');
-  await checkSeleniumEnvironment();
 
-  const opts = {args: args, install: false};
-  return seleniumStart(wct, opts);
+  return seleniumStart(wct, {args: args});
 }
 
 export async function installAndStartSeleniumServer(
       wct: wct.Context, args: string[]) {
   wct.emit(
       'log:info', 'Installing and starting Selenium server for local browsers');
-  await checkSeleniumEnvironment();
 
-  const opts = {args: args, install: true};
-  return seleniumStart(wct, opts);
+  return seleniumStart(wct, {args: args, install: true});
 }
 
 async function seleniumStart(
       wct: wct.Context,
-      opts: {args: string[], install: boolean}): Promise<number> {
+      opts: {args: string[], install?: boolean}): Promise<number> {
   const port = await promisify(freeport)();
 
   // See below.

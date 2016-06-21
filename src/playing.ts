@@ -65,7 +65,7 @@ async function main() {
 
   console.log('getting countdown');
   await driver.get('https://summit-countdown.com/');
-  const elem = await driver.findElement(By.css('summit-countdown'))
+  const elem = await driver.findElement(By.css('summit-countdown'));
   const text = await elem.getText();
   console.log(text);
   // console.log(await driver.executeScript('document.querySelector("summit-countdown").length'));
@@ -73,7 +73,7 @@ async function main() {
 
   await new Promise((resolve) => setTimeout(resolve, 10000));
 
-  console.log((await driver.getSession()))
+  console.log((await driver.getSession()));
 
   await driver.quit();
 }
