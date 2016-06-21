@@ -31,7 +31,7 @@ export function normalize(browsers: (string | {browserName: string})[]) {
     if (typeof browser === 'string') {
       return browser;
     }
-    return browser.browserName;
+    return (<{browserName: string}>browser).browserName;
   });
 }
 
