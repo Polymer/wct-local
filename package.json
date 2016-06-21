@@ -20,8 +20,7 @@
     "init": "gulp init",
     "build": "gulp build",
     "test": "gulp test",
-    "prepublish": "gulp build-all",
-    "postinstall": "node scripts/postinstall.js"
+    "prepublish": "gulp build-all"
   },
   "wct-plugin": {
     "cli-options": {
