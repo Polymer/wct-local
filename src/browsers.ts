@@ -88,7 +88,10 @@ export async function detect() {
   for (const browser of browsers) {
     if (!LAUNCHPAD_TO_SELENIUM[browser.name]) continue;
     const converter = LAUNCHPAD_TO_SELENIUM[browser.name];
-    results[browser.name] = converter(browser);
+    const wdCapabilities = converter(browser);
+    if (wdCapabilities) {
+      results[browser.name] = wdCapabilities;
+    }
   }
 
   return results;
@@ -127,9 +130,13 @@ function chrome(browser: launchpad.Browser): wd.Capabilities {
  * @return {!Object} A selenium capabilities object.
  */
 function firefox(browser: launchpad.Browser): wd.Capabilities {
+  const version = browser.version.match(/\d+/)[0];
+  if (version === '47') {
+    return null;  // Driving Firefox 47 doesn't work :(
+  }
   return {
     'browserName':    'firefox',
-    'version':        browser.version.match(/\d+/)[0],
+    'version':        version,
     'firefox_binary': browser.binPath,
   };
 }
