@@ -9,6 +9,7 @@
  */
 import * as browsers from './browsers';
 import * as selenium from './selenium';
+import * as webdriver from 'selenium-webdriver';
 import * as wd from 'wd';
 import * as wct from 'wct';
 import * as promisify from 'promisify-node';
@@ -89,20 +90,15 @@ const plugin: wct.PluginInterface = (
     onPrepare().then(() => done(), (err) => done(err));
   });
 
-  // NOTE(rictic): I can't actually find the code that emits this event...
-  //     There doesn't seem to be an obvious source in either wct or this
-  //     plugin.
   wct.on('browser-start', (
         def: wct.BrowserDef, data: {url: string}, stats: wct.Stats,
-        browser: any /* TODO(rictic): what is browser here? */) => {
+        browser: webdriver.WebDriver) => {
     if (!browser) return;
-    browser.maximize(function(err: any) {
-      if (err) {
-        wct.emit('log:error', def.browserName + ' failed to maximize');
-      } else {
-        wct.emit('log:debug', def.browserName + ' maximized');
-      }
-    });
+
+    browser.manage().window().maximize().then(
+      () => wct.emit('log:debug', def.browserName + ' maximized'),
+      () => wct.emit('log:error', def.browserName + ' failed to maximize')
+    );
   });
 };
 
