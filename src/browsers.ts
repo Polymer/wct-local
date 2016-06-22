@@ -138,6 +138,8 @@ function firefox(browser: launchpad.Browser): Capabilities {
   capabilities.set('marionette', true);
   capabilities.set('version', version);
   capabilities.set('firefox_binary', browser.binPath);
+  capabilities['browserName'] = 'firefox';
+  capabilities['version'] = version;
   return capabilities;
 }
 
