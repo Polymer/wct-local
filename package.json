@@ -20,7 +20,8 @@
     "init": "gulp init",
     "build": "gulp build",
     "test": "gulp test",
-    "prepublish": "gulp build-all"
+    "prepublish": "gulp build-all",
+    "postinstall": "node scripts/postinstall.js"
   },
   "wct-plugin": {
     "cli-options": {
@@ -30,17 +31,6 @@
         "metavar": "NAME",
         "abbr": "l",
         "list": true
-      },
-      "seleniumArgs": {
-        "help": "Additional selenium server arguments. Port is auto-selected.",
-        "full": "selenium-arg",
-        "metavar": "ARG",
-        "list": true
-      },
-      "skipSeleniumInstall": {
-        "help": "Skip trying to install selenium.",
-        "full": "skip-selenium-install",
-        "flag": true
       }
     }
   },
@@ -62,13 +52,12 @@
     "typescript": "^1.8.10"
   },
   "dependencies": {
-    "chromedriver": "^2.21.2",
     "launchpad": "^0.5.0",
     "promisify-node": "^0.4.0",
+    "selenium-standalone": "^5.1.1",
     "selenium-webdriver": "^2.53.2"
   },
   "engines": {
     "node": ">=4.0"
-  },
-  "selenium-version": "2.53.0"
+  }
 }
