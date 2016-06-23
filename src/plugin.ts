@@ -72,7 +72,6 @@ const plugin: wct.PluginInterface = (
     await new Promise((resolve, reject) => {
       wct.emitHook('prepare:selenium', (e) => e ? reject(e) : resolve());
     });
-    process.env.PATH = `${process.env.PATH}:${__dirname}/../drivers/`;
 
     for (const capability of eachCapabilities) {
       const driver = new webdriver.Builder()

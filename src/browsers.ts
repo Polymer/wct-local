@@ -11,6 +11,7 @@ import * as launchpad from 'launchpad';
 import * as wd from 'wd';
 import * as promisify from 'promisify-node';
 import * as selenium from 'selenium-webdriver';
+import * as chromedriver from 'chromedriver';
 
 // Either is fine for selenium-webdriver's purposes.
 type Capabilities = (wd.Capabilities | selenium.Capabilities);
@@ -48,6 +49,8 @@ export function normalize(browsers: (string | {browserName: string})[]) {
  * @param {function(*, Array<!Object>)} done
  */
 export async function expand(names: string[]) {
+  process.env.PATH =
+      `${process.env.PATH}:${__dirname}/../drivers/:${chromedriver.path}`;
   if (names.indexOf('all') !== -1) {
     names = [];
   }
