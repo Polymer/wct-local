@@ -21,7 +21,7 @@ interface PluginOptions {
 
 /** WCT plugin that enables support for local browsers via Selenium. */
 const plugin: wct.PluginInterface = (
-      wct: wct.Context, pluginOptions: PluginOptions) => {
+      wct: wct.Context, pluginOptions: PluginOptions): void => {
 
   // The capabilities objects for browsers to run. We don't know the port until
   // `prepare`, so we've gotta hang onto them.

@@ -21,7 +21,7 @@ const SELENIUM_VERSION: string = require('../package.json')['selenium-version'];
 
 type Args = string[];
 
-export async function checkSeleniumEnvironment() {
+export async function checkSeleniumEnvironment(): Promise<void> {
   try {
     await promisify(which)('java');
     return;
@@ -42,7 +42,8 @@ export async function checkSeleniumEnvironment() {
   throw message;
 }
 
-export async function startSeleniumServer(wct: wct.Context, args: string[]) {
+export async function startSeleniumServer(
+      wct: wct.Context, args: string[]): Promise<number> {
   wct.emit('log:info', 'Starting Selenium server for local browsers');
   await checkSeleniumEnvironment();
 
@@ -51,7 +52,7 @@ export async function startSeleniumServer(wct: wct.Context, args: string[]) {
 }
 
 export async function installAndStartSeleniumServer(
-      wct: wct.Context, args: string[]) {
+      wct: wct.Context, args: string[]): Promise<number> {
   wct.emit(
       'log:info', 'Installing and starting Selenium server for local browsers');
   await checkSeleniumEnvironment();

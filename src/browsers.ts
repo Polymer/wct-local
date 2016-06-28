@@ -22,7 +22,8 @@ const LAUNCHPAD_TO_SELENIUM: {[browser: string]: LaunchpadToWebdriver} = {
   safari:  safari,
 };
 
-export function normalize(browsers: (string | {browserName: string})[]) {
+export function normalize(
+      browsers: (string | {browserName: string})[]): string[] {
   return (browsers || []).map(function(browser) {
     if (typeof browser === 'string') {
       return browser;
@@ -37,7 +38,7 @@ export function normalize(browsers: (string | {browserName: string})[]) {
  *
  * If `names` is empty, or contains `all`, all installed browsers will be used.
  */
-export async function expand(names: string[]) {
+export async function expand(names: string[]): Promise<wd.Capabilities[]> {
   if (names.indexOf('all') !== -1) {
     names = [];
   }
@@ -73,7 +74,7 @@ export async function expand(names: string[]) {
  *
  * Exported for testabilty in wct.
  */
-export async function detect() {
+export async function detect(): Promise<{[browser: string]: wd.Capabilities}> {
   const launcher = await promisify(launchpad.local)();
   const browsers = await promisify(launcher.browsers)();
 
@@ -93,7 +94,7 @@ export async function detect() {
  * @return A list of local browser names that are supported by
  *     the current environment.
  */
-export function supported() {
+export function supported(): string[] {
   return Object.keys(launchpad.local.platform).filter(
       (key) => key in LAUNCHPAD_TO_SELENIUM);
 }
