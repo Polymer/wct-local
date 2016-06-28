@@ -108,10 +108,6 @@ const plugin: wct.PluginInterface = (
 
 // Utility
 
-/**
- * @param {!Array.<!Object>} eachCapabilities
- * @param {number} port
- */
 function updatePort(capabilities: wct.BrowserDef[], port: number) {
   capabilities.forEach(function(capabilities) {
     capabilities.url = {

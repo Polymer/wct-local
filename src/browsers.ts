@@ -22,10 +22,6 @@ const LAUNCHPAD_TO_SELENIUM: {[browser: string]: LaunchpadToWebdriver} = {
   safari:  safari,
 };
 
-/**
- * @param {Array<string|!Object>} browsers
- * @return {!Array<string>}
- */
 export function normalize(browsers: (string | {browserName: string})[]) {
   return (browsers || []).map(function(browser) {
     if (typeof browser === 'string') {
@@ -40,9 +36,6 @@ export function normalize(browsers: (string | {browserName: string})[]) {
  * their webdriver capabilities objects.
  *
  * If `names` is empty, or contains `all`, all installed browsers will be used.
- *
- * @param {!Array<string>} names
- * @param {function(*, Array<!Object>)} done
  */
 export async function expand(names: string[]) {
   if (names.indexOf('all') !== -1) {
@@ -108,8 +101,8 @@ export function supported() {
 // Launchpad -> Selenium
 
 /**
- * @param {!Object} browser A launchpad browser definition.
- * @return {!Object} A selenium capabilities object.
+ * @param browser A launchpad browser definition.
+ * @return A selenium capabilities object.
  */
 function chrome(browser: launchpad.Browser): wd.Capabilities {
   return {
@@ -123,8 +116,8 @@ function chrome(browser: launchpad.Browser): wd.Capabilities {
 }
 
 /**
- * @param {!Object} browser A launchpad browser definition.
- * @return {!Object} A selenium capabilities object.
+ * @param browser A launchpad browser definition.
+ * @return A selenium capabilities object.
  */
 function firefox(browser: launchpad.Browser): wd.Capabilities {
   return {
@@ -135,8 +128,8 @@ function firefox(browser: launchpad.Browser): wd.Capabilities {
 }
 
 /**
- * @param {!Object} browser A launchpad browser definition.
- * @return {!Object} A selenium capabilities object.
+ * @param browser A launchpad browser definition.
+ * @return A selenium capabilities object.
  */
 function safari(browser: launchpad.Browser): wd.Capabilities {
   // SafariDriver doesn't appear to support custom binary paths. Does Safari?
@@ -151,8 +144,8 @@ function safari(browser: launchpad.Browser): wd.Capabilities {
 }
 
 /**
- * @param {!Object} browser A launchpad browser definition.
- * @return {!Object} A selenium capabilities object.
+ * @param browser A launchpad browser definition.
+ * @return A selenium capabilities object.
  */
 function internetExplorer(browser: launchpad.Browser): wd.Capabilities {
   return {
