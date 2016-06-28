@@ -46,20 +46,8 @@
     }
   },
   "devDependencies": {
-    "depcheck": "^0.6.3",
-    "fs-extra": "^0.30.0",
     "gulp": "^3.8.10",
-    "gulp-eslint": "^2.0.0",
-    "gulp-jshint": "^2.0.0",
-    "gulp-mocha": "^2.2.0",
-    "gulp-tslint": "^5.0.0",
-    "gulp-typescript": "^2.13.6",
-    "gulp-typings": "^2.0.0",
-    "jshint": "^2.9.1",
-    "jshint-stylish": "^2.0.1",
-    "merge-stream": "^1.0.0",
-    "run-sequence": "^1.2.1",
-    "tslint": "^3.11.0",
+    "tools-common": "github:rictic/tools-common#3ca6a13",
     "typescript": "^1.8.10"
   },
   "dependencies": {
