@@ -43,7 +43,13 @@ export async function expand(names: string[]): Promise<wd.Capabilities[]> {
     names = [];
   }
 
-  const unsupported = difference(names, supported());
+  // The supported and detect functions are stubbed out in test by
+  // web-component-tester so we need to access them locally this way.
+  const stubbableSupported: typeof supported = module.exports.supported;
+  const stubbableDetect: typeof detect = module.exports.detect;
+
+
+  const unsupported = difference(names, stubbableSupported());
   if (unsupported.length > 0) {
     throw new Error(
         `The following browsers are unsupported: ${unsupported.join(', ')}. ` +
@@ -51,7 +57,8 @@ export async function expand(names: string[]): Promise<wd.Capabilities[]> {
     );
   }
 
-  const installedByName = await detect();
+
+  const installedByName = await stubbableDetect();
   const installed = Object.keys(installedByName);
   // Opting to use everything?
   if (names.length === 0) {
