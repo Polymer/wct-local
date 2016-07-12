@@ -43,13 +43,7 @@ export async function expand(names: string[]): Promise<wd.Capabilities[]> {
     names = [];
   }
 
-  // The supported and detect functions are stubbed out in test by
-  // web-component-tester so we need to access them locally this way.
-  const stubbableSupported: typeof supported = module.exports.supported;
-  const stubbableDetect: typeof detect = module.exports.detect;
-
-
-  const unsupported = difference(names, stubbableSupported());
+  const unsupported = difference(names, supported());
   if (unsupported.length > 0) {
     throw new Error(
         `The following browsers are unsupported: ${unsupported.join(', ')}. ` +
@@ -57,8 +51,7 @@ export async function expand(names: string[]): Promise<wd.Capabilities[]> {
     );
   }
 
-
-  const installedByName = await stubbableDetect();
+  const installedByName = await detect();
   const installed = Object.keys(installedByName);
   // Opting to use everything?
   if (names.length === 0) {
@@ -79,9 +72,9 @@ export async function expand(names: string[]): Promise<wd.Capabilities[]> {
 /**
  * Detects any locally installed browsers that we support.
  *
- * Exported for testabilty in wct.
+ * Exported and declared as `let` variables for testabilty in wct.
  */
-export async function detect(): Promise<{[browser: string]: wd.Capabilities}> {
+export let detect = async function detect(): Promise<{[browser: string]: wd.Capabilities}> {
   const launcher = await promisify(launchpad.local)();
   const browsers = await promisify(launcher.browsers)();
 
@@ -93,18 +86,18 @@ export async function detect(): Promise<{[browser: string]: wd.Capabilities}> {
   }
 
   return results;
-}
+};
 
 /**
- * Exported for testabilty in wct.
+ * Exported and declared as `let` variables for testabilty in wct.
  *
  * @return A list of local browser names that are supported by
  *     the current environment.
  */
-export function supported(): string[] {
+export let supported = function supported(): string[] {
   return Object.keys(launchpad.local.platform).filter(
       (key) => key in LAUNCHPAD_TO_SELENIUM);
-}
+};
 
 // Launchpad -> Selenium
 
