@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "gulp": "^3.8.10",
-    "tools-common": "github:rictic/tools-common#0de693a",
+    "tools-common": "github:rictic/tools-common#f3dc310",
     "typescript": "^1.8.10"
   },
   "dependencies": {
