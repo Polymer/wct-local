@@ -48,7 +48,7 @@
   "devDependencies": {
     "@types/freeport": "^1.0.19",
     "gulp": "^3.8.10",
-    "tools-common": "github:rictic/tools-common#0de693a",
+    "tools-common": "github:Polymer/tools-common#ed1dd8f",
     "typescript": "^1.8.10"
   },
   "dependencies": {
