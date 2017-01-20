@@ -76,6 +76,7 @@
       },
       "chrome": {},
       "ie": {}
-    }
+    },
+    "javaArgs": ["-Dwebdriver.edge.driver=C:\\Program Files (x86)\\Microsoft Web Driver\\MicrosoftWebDriver.exe"]
   }
 }

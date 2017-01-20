@@ -18,7 +18,7 @@ declare module 'wd' {
   }
   export interface Capabilities {
     /** The name of the browser being used */
-    browserName: 'android'|'chrome'|'firefox'|'htmlunit'|'internet explorer'|'iPhone'|'iPad'|'opera'|'safari'|'phantomjs';
+    browserName: 'android'|'chrome'|'firefox'|'htmlunit'|'internet explorer'|'iPhone'|'iPad'|'opera'|'safari'|'phantomjs'|'MicrosoftEdge';
     /** The browser version, or the empty string if unknown. */
     version: string;
     /** A key specifying which platform the browser should be running on. */

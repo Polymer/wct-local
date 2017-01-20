@@ -10,9 +10,10 @@
 import * as launchpad from 'launchpad';
 import * as wd from 'wd';
 import * as promisify from 'promisify-node';
+import * as fs from 'fs';
 
 type LaunchpadToWebdriver = (browser: launchpad.Browser) => wd.Capabilities;
-const LAUNCHPAD_TO_SELENIUM: {[browser: string]: LaunchpadToWebdriver} = {
+let LAUNCHPAD_TO_SELENIUM: {[browser: string]: LaunchpadToWebdriver} = {
   chrome:  chrome,
   canary:  chrome,
   firefox: firefox,
@@ -23,6 +24,16 @@ const LAUNCHPAD_TO_SELENIUM: {[browser: string]: LaunchpadToWebdriver} = {
   // See: https://github.com/Polymer/wct-local/issues/38
   // phantom: phantom,
 };
+
+// If webdriver available for edge add it to LAUNCHPAD_TO_SELENIUM.
+const programFiles = process.env['ProgramFiles(x86)'];
+if (programFiles) {
+  const webdriver: string = programFiles + '\\Microsoft Web Driver\\MicrosoftWebDriver.exe';
+  if (fs.existsSync(webdriver)) {
+    const edgeprop = 'edge';
+    LAUNCHPAD_TO_SELENIUM[edgeprop] = edge;
+  }
+}
 
 export function normalize(
       browsers: (string | {browserName: string})[]): string[] {
@@ -172,6 +183,17 @@ function internetExplorer(browser: launchpad.Browser): wd.Capabilities {
   return {
     'browserName': 'internet explorer',
     'version':     browser.version,
+  };
+}
+
+/**
+ * @param browser A launchpad browser definition.
+ * @return A selenium capabilities object.
+ */
+function edge(browser: launchpad.Browser): wd.Capabilities {
+  return {
+    'browserName': 'MicrosoftEdge',
+    'version': browser.version
   };
 }
 
