@@ -1,6 +1,6 @@
 {
-  "name": "@or9-rockman/wct-local",
-  "version": "2.0.16",
+  "name": "wct-local",
+  "version": "2.0.15",
   "description": "WCT plugin that enables support for local browsers via Selenium",
   "keywords": [
     "wct",
@@ -12,7 +12,7 @@
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/or9/wct-local.git"
+    "url": "https://github.com/Polymer/wct-local.git"
   },
   "main": "lib/plugin.js",
   "typings": "lib/plugin.d.ts",
@@ -58,7 +58,6 @@
     "@types/node": "^6.0.31",
     "@types/which": "^1.0.27",
     "chalk": "^1.1.1",
-    "chromedriver": "^2.33.2",
     "cleankill": "^1.0.3",
     "freeport": "^1.0.4",
     "launchpad": "^0.6.0",
@@ -67,9 +66,8 @@
     "which": "^1.0.8"
   },
   "engines": {
-    "node": ">=8.0"
+    "node": ">=6.0"
   },
-  "engineStrict": true,
   "selenium-overrides": {
     "version": "3.0.1",
     "drivers": {
