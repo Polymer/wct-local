@@ -14,9 +14,10 @@ import * as selenium from 'selenium-standalone';
 import * as which from 'which';
 import * as child_process from 'child_process';
 import * as wct from 'wct';
-import * as promisify from 'promisify-node';
+// import promisify from 'util';
+const { promisify } = require("util");
 
-const SELENIUM_OVERRIDES: any = require('../package.json')['selenium-overrides'];
+const SELENIUM_OVERRIDES: any = require(`${process.env.PWD}/package.json`)['selenium-overrides'] || require('../package.json')['selenium-overrides'];
 
 
 type Args = string[];
@@ -90,7 +91,7 @@ async function seleniumStart(
 
   if (opts.install) {
     try {
-      const options = SELENIUM_OVERRIDES || {};
+      let options = SELENIUM_OVERRIDES || {};
       options.logger = onOutput;
       await promisify(selenium.install)(options);
     } catch (error) {

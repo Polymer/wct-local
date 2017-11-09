@@ -111,12 +111,13 @@ export let supported = function supported(): string[] {
  * @return A selenium capabilities object.
  */
 function chrome(browser: launchpad.Browser): wd.Capabilities {
+  const ARGS = (process.env.CHROME_ARGS || `start-maximized,headless,disable-gpu,no-sandbox`).split(",");
   return {
     'browserName': 'chrome',
     'version':     browser.version.match(/\d+/)[0],
     'chromeOptions': {
       'binary': browser.binPath,
-      'args': ['start-maximized']
+      'args': ARGS
     },
   };
 }

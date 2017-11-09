@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * @license
  * Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
@@ -8,7 +9,16 @@
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
 
-var SELENIUM_OVERRIDES = require('../package.json')['selenium-overrides'];
+const { spawn } = require("child_process");
+const isWindows = /^win/.test(process.platform);
+
+if (!isWindows) {
+  spawn(`${process.env.PWD}/scripts/copyChromedriver.sh`, { stdio: "inherit" });
+} else {
+  console.info("No windows script yet.");
+}
+
+const SELENIUM_OVERRIDES = require('../package.json')['selenium-overrides'];
 // Work around a potential npm race condition:
 // https://github.com/npm/npm/issues/6624
 function requireSelenium(done, attempt) {
