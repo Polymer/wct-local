@@ -16,7 +16,7 @@ import * as child_process from 'child_process';
 import * as wct from 'wct';
 import * as promisify from 'promisify-node';
 
-const SELENIUM_OVERRIDES: any require(`${process.env.PWD}/package.json`)['selenium-overrides'] || any = require('../package.json')['selenium-overrides'];
+const SELENIUM_OVERRIDES: any = require('../package.json')['selenium-overrides'];
 
 
 type Args = string[];
