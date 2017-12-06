@@ -84,7 +84,7 @@ export let detect = async function detect(browsersOptions: {}): Promise<{[browse
   for (const browser of browsers) {
     if (!LAUNCHPAD_TO_SELENIUM[browser.name]) continue;
     const converter = LAUNCHPAD_TO_SELENIUM[browser.name];
-    const convertedBrowser = converter(browser, browsersOptions[browser.name]);
+    const convertedBrowser = converter(browser, browsersOptions && browsersOptions[browser.name]);
     if (convertedBrowser) {
       results[browser.name] = convertedBrowser;
     }
