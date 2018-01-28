@@ -76,6 +76,7 @@ async function seleniumStart(
 
   const config: selenium.StartOpts = SELENIUM_OVERRIDES || {};
   config.seleniumArgs = ['-port', port.toString()].concat(opts.args);
+  config.seleniumJavaArgs = [];
   // Bookkeeping once the process starts.
   config.spawnCb = function(server: child_process.ChildProcess) {
     // Make sure that we interrupt the selenium server ASAP.
