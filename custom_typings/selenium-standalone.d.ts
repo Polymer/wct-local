@@ -59,6 +59,10 @@ declare module 'selenium-standalone' {
      * child_process.spawn.
      */
     seleniumArgs?: string[];
+    
+    /** seleniumJavaArgs
+     */
+    seleniumJavaArgs?: string[];
 
     /** set the javaPath manually, otherwise we use `which` */
     javaPath?: string;
