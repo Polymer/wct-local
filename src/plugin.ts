@@ -15,7 +15,7 @@ import * as promisify from 'promisify-node';
 
 interface PluginOptions {
   seleniumArgs?: string[];
-  seleniumJavaArgs?: string[];
+  javaArgs?: string[];
   skipSeleniumInstall?: boolean;
   browsers: string[];
   browserOptions?: {};
@@ -36,7 +36,7 @@ const plugin: wct.PluginInterface = (
   // kick in if someone has specified browsers via another plugin.
   const onConfigure = async () => {
     pluginOptions.seleniumArgs = pluginOptions.seleniumArgs || [];
-    pluginOptions.seleniumJavaArgs = pluginOptions.seleniumJavaArgs || [];
+    pluginOptions.javaArgs = pluginOptions.javaArgs || [];
     pluginOptions.skipSeleniumInstall =
         pluginOptions.skipSeleniumInstall || false;
 
