@@ -37,7 +37,7 @@
         "metavar": "ARG",
         "list": true
       },
-      "seleniumJavaArgs": {
+      "javaArgs": {
         "help": "Add java args to selenium-java-args",
         "full": "selenium-java-args",
         "metavar": "ARG",
