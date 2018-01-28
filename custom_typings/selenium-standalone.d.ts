@@ -62,7 +62,7 @@ declare module 'selenium-standalone' {
     
     /** seleniumJavaArgs
      */
-    seleniumJavaArgs?: string[];
+    javaArgs?: string[];
 
     /** set the javaPath manually, otherwise we use `which` */
     javaPath?: string;
